@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import liff from "@line/liff";
 
 export default function Home() {
-  const [profile, setProfile] = useState(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     // ฟังก์ชันสำหรับจัดการ LIFF
