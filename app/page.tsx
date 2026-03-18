@@ -1,15 +1,21 @@
 "use client"; // สำคัญมาก: ต้องประกาศเป็น Client Component
 
 import { useEffect, useState } from "react";
-import liff from "@line/liff";
+
+type LineProfile = {
+  displayName: string;
+  pictureUrl?: string;
+  statusMessage?: string;
+};
 
 export default function Home() {
-  const [profile, setProfile] = useState<Awaited<ReturnType<typeof liff.getProfile>> | null>(null);
+  const [profile, setProfile] = useState<LineProfile | null>(null);
 
   useEffect(() => {
     // ฟังก์ชันสำหรับจัดการ LIFF
     const initLiff = async () => {
       try {
+        const { default: liff } = await import("@line/liff");
         await liff.init({ liffId: "LIFF_ID_REMOVED" });
         
         if (liff.isLoggedIn()) {
