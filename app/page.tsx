@@ -1,9 +1,56 @@
-import Image from "next/image";
+"use client"; // สำคัญมาก: ต้องประกาศเป็น Client Component
+
+import { useEffect, useState } from "react";
+import liff from "@line/liff";
 
 export default function Home() {
+  const [profile, setProfile] = useState(null);
+
+  useEffect(() => {
+    // ฟังก์ชันสำหรับจัดการ LIFF
+    const initLiff = async () => {
+      try {
+        await liff.init({ liffId: "LIFF_ID_REMOVED" });
+        
+        if (liff.isLoggedIn()) {
+          const userProfile = await liff.getProfile();
+          setProfile(userProfile);
+        } else {
+          liff.login();
+        }
+      } catch (err) {
+        console.error("LIFF Initialization failed", err);
+      }
+    };
+
+    initLiff();
+  }, []); // [] ว่างเปล่า เพื่อให้ทำงานแค่ครั้งเดียวตอน Mount
+
   return (
-    <div className="flex bg-zinc-50 font-sans dark:bg-black p-6">
-      Hello anyone, this is a test page for the new Next.js 13 app directory. It is using the new app layout and page structure. The layout is defined in the app/layout.tsx file and the page is defined in the app/page.tsx file. The layout is using the Geist font from Google Fonts and the page is using the default font. The page is also using the new Image component from Next.js to optimize images.
+    <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black p-6 min-h-screen">
+      <h1 className="text-xl font-bold mb-4">LIFF Profile Test</h1>
+      
+      {profile ? (
+        <div className="flex items-center gap-4 border p-4 rounded-lg bg-white dark:bg-zinc-900">
+          {profile.pictureUrl && (
+            <img 
+              src={profile.pictureUrl} 
+              alt="Profile" 
+              className="w-16 h-16 rounded-full" 
+            />
+          )}
+          <div>
+            <p className="font-semibold text-zinc-900 dark:text-white">{profile.displayName}</p>
+            <p className="text-sm text-zinc-500">{profile.statusMessage}</p>
+          </div>
+        </div>
+      ) : (
+        <p>กำลังโหลดข้อมูลโปรไฟล์...</p>
+      )}
+
+      <div className="mt-6 text-sm text-zinc-600 dark:text-zinc-400">
+        Hello anyone, this is a test page for the new Next.js 13 app directory...
+      </div>
     </div>
   );
 }
