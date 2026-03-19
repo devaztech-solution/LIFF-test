@@ -10,12 +10,14 @@ type LineProfile = {
 
 export default function Home() {
   const [profile, setProfile] = useState<LineProfile | null>(null);
+  const [isLogin, setIsLogin] = useState(false);
+  let liff: any;
 
-  useEffect(() => {
-    // ฟังก์ชันสำหรับจัดการ LIFF
+
+  // ฟังก์ชันสำหรับจัดการ LIFF
     const initLiff = async () => {
       try {
-        const { default: liff } = await import("@line/liff");
+       liff = await import("@line/liff");
         const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
         if (!liffId) {
           throw new Error("NEXT_PUBLIC_LIFF_ID is not set");
@@ -25,13 +27,14 @@ export default function Home() {
         if (liff.isLoggedIn()) {
           const userProfile = await liff.getProfile();
           setProfile(userProfile);
-        } else {
-          liff.login();
-        }
+          setIsLogin(true);
+        } 
       } catch (err) {
         console.error("LIFF Initialization failed", err);
       }
     };
+
+  useEffect(() => {
 
     initLiff();
   }, []); // [] ว่างเปล่า เพื่อให้ทำงานแค่ครั้งเดียวตอน Mount
@@ -40,7 +43,7 @@ export default function Home() {
     <div className="flex flex-col bg-zinc-50 font-sans dark:bg-black p-6 min-h-screen">
       <h1 className="text-xl font-bold mb-4">LIFF Profile Test</h1>
       
-      {profile ? (
+      {profile && isLogin ? (
         <div className="flex items-center gap-4 border p-4 rounded-lg bg-white dark:bg-zinc-900">
           {profile.pictureUrl && (
             <img 
@@ -59,7 +62,9 @@ export default function Home() {
           </pre>
         </div>
       ) : (
-        <p>กำลังโหลดข้อมูลโปรไฟล์...</p>
+        <div>
+          <button onClick={() => liff.login()} className="p-2 rounded-lg border cursor-pointer">Login with LINE</button>
+        </div>
       )}
 
       <div className="mt-6 text-sm text-zinc-600 dark:text-zinc-400">
