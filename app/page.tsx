@@ -16,7 +16,11 @@ export default function Home() {
     const initLiff = async () => {
       try {
         const { default: liff } = await import("@line/liff");
-        await liff.init({ liffId: "LIFF_ID_REMOVED" });
+        const liffId = process.env.NEXT_PUBLIC_LIFF_ID;
+        if (!liffId) {
+          throw new Error("NEXT_PUBLIC_LIFF_ID is not set");
+        }
+        await liff.init({ liffId });
         
         if (liff.isLoggedIn()) {
           const userProfile = await liff.getProfile();
@@ -49,6 +53,10 @@ export default function Home() {
             <p className="font-semibold text-zinc-900 dark:text-white">{profile.displayName}</p>
             <p className="text-sm text-zinc-500">{profile.statusMessage}</p>
           </div>
+
+          <pre>
+            {JSON.stringify(profile, null, 2)}
+          </pre>
         </div>
       ) : (
         <p>กำลังโหลดข้อมูลโปรไฟล์...</p>
