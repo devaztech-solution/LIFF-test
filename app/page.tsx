@@ -44,6 +44,9 @@ export default function Home() {
       <h1 className="text-xl font-bold mb-4">LIFF Profile Test</h1>
       
       {profile && isLogin ? (
+        <div className="flex flex-col">
+          <button onClick={() => liff.logout()} className="p-2 rounded-lg border cursor-pointer">Logout</button>
+
         <div className="flex items-center gap-4 border p-4 rounded-lg bg-white dark:bg-zinc-900">
           {profile.pictureUrl && (
             <img 
@@ -60,6 +63,7 @@ export default function Home() {
           <pre>
             {JSON.stringify(profile, null, 2)}
           </pre>
+        </div>
         </div>
       ) : (
         <div>
