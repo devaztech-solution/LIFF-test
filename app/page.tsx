@@ -60,9 +60,6 @@ export default function Home() {
             <p className="text-sm text-zinc-500">{profile.statusMessage}</p>
           </div>
 
-          <pre>
-            {JSON.stringify(profile, null, 2)}
-          </pre>
         </div>
         </div>
       ) : (
